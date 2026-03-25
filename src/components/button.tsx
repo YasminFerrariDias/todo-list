@@ -14,14 +14,14 @@ export const buttonVariants = cva(`
     size: {
       md: "h-14 py-4 px-5"
     },
-    disable: {
+    disabled: {
       true: "opacity-50 pointer-events-none"
     }
   },
   defaultVariants: {
     variant: "primary",
     size: "md",
-    disable: false
+    disabled: false
   }
 });
 
@@ -49,7 +49,7 @@ export const buttonIconVariants = cva("transition", {
 })
 
 interface ButtonProps
-  extends React.ComponentProps<"button">,
+  extends Omit<React.ComponentProps<"button">, "disabled">,
   VariantProps<typeof buttonVariants> {
   icon?: React.ComponentProps<typeof Icon>["svg"]
 }
@@ -64,7 +64,7 @@ export default function Button({
   ...props
 }: ButtonProps) {
   return (
-    <button className={buttonVariants({ variant, size, disable: disabled, className })}
+    <button className={buttonVariants({ variant, size, disabled, className })}
       {...props}>
       {IconComponent && (
         <Icon
