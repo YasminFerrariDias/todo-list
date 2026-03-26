@@ -12,12 +12,14 @@ import CheckIcon from "../assets/icons/check.svg?react";
 import { TaskState, type Task } from "../models/task";
 import { cx } from "class-variance-authority";
 import useTask from "../hooks/use-task";
+import Skeleton from "../components/skeleton";
 
 interface TaskItemProps {
   task: Task;
+  loading?: boolean;
 }
 
-export default function TaskItem({ task }: TaskItemProps) {
+export default function TaskItem({ task, loading }: TaskItemProps) {
   const [isEditing, setIsEditing] = React.useState(
     task?.state === TaskState.Creating
   )
@@ -65,15 +67,22 @@ export default function TaskItem({ task }: TaskItemProps) {
           <InputCheckbox
             checked={task?.concluded}
             onChange={handleChangeUpdateTaskStatus}
+            loading={loading}
           />
 
-          <Text className={cx("flex-1", {
-            'line-through': task?.concluded,
-          })}>{task?.title}</Text>
-
+          {!loading ? (
+            <Text
+              className={cx("flex-1", {
+                'line-through': task?.concluded,
+              })}
+            >
+              {task?.title}
+            </Text>) : (
+            <Skeleton className="flex-1 h-6" />
+          )}
           <div className="flex gap-1">
-            <ButtonIcon icon={TrashIcon} variant={"tertiary"} onClick={handleDeleteTask} />
-            <ButtonIcon icon={PencilIcon} variant={"tertiary"} onClick={handleEditTask} />
+            <ButtonIcon icon={TrashIcon} variant={"tertiary"} onClick={handleDeleteTask} loading={loading} />
+            <ButtonIcon icon={PencilIcon} variant={"tertiary"} onClick={handleEditTask} loading={loading} />
           </div>
         </div>
         :
