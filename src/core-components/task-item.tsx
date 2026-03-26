@@ -23,7 +23,7 @@ export default function TaskItem({ task }: TaskItemProps) {
   )
 
   const [taskTitle, setTaskTitle] = React.useState(task.title || "");
-  const {updateTask} = useTask();
+  const { updateTask, updateTaskStatus } = useTask();
 
   function handleEditTask() {
     setIsEditing(true)
@@ -40,9 +40,14 @@ export default function TaskItem({ task }: TaskItemProps) {
   function handleSaveTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    updateTask(task.id, {title: taskTitle})
+    updateTask(task.id, { title: taskTitle })
 
     setIsEditing(false);
+  }
+
+  function handleChangeUpdateTaskStatus(e: React.ChangeEvent<HTMLInputElement>) {
+    const checked = e.target.checked;
+    updateTaskStatus(task.id, checked)
   }
 
   return (
@@ -50,8 +55,8 @@ export default function TaskItem({ task }: TaskItemProps) {
       {!isEditing ?
         <div className="flex items-center gap-4">
           <InputCheckbox
-            value={task?.concluded?.toString()}
             checked={task?.concluded}
+            onChange={handleChangeUpdateTaskStatus}
           />
 
           <Text className={cx("flex-1", {
