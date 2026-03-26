@@ -11,6 +11,7 @@ import XIcon from "../assets/icons/x.svg?react";
 import CheckIcon from "../assets/icons/check.svg?react";
 import { TaskState, type Task } from "../models/task";
 import { cx } from "class-variance-authority";
+import useTask from "../hooks/use-task";
 
 interface TaskItemProps {
   task: Task;
@@ -21,7 +22,8 @@ export default function TaskItem({ task }: TaskItemProps) {
     task?.state === TaskState.Creating
   )
 
-  const [taskTitle, setTaskTitle] = React.useState("")
+  const [taskTitle, setTaskTitle] = React.useState(task.title || "");
+  const {updateTask} = useTask();
 
   function handleEditTask() {
     setIsEditing(true)
@@ -37,8 +39,9 @@ export default function TaskItem({ task }: TaskItemProps) {
 
   function handleSaveTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(task.id, taskTitle)
-    // chamada para função de atualizar
+
+    updateTask(task.id, {title: taskTitle})
+
     setIsEditing(false);
   }
 
@@ -50,9 +53,11 @@ export default function TaskItem({ task }: TaskItemProps) {
             value={task?.concluded?.toString()}
             checked={task?.concluded}
           />
+
           <Text className={cx("flex-1", {
             'line-through': task?.concluded,
           })}>{task?.title}</Text>
+
           <div className="flex gap-1">
             <ButtonIcon icon={TrashIcon} variant={"tertiary"} />
             <ButtonIcon icon={PencilIcon} variant={"tertiary"} onClick={handleEditTask} />
@@ -62,6 +67,7 @@ export default function TaskItem({ task }: TaskItemProps) {
         <>
           <form onSubmit={handleSaveTask} className="flex items-center gap-4">
             <InputText
+              value={taskTitle}
               className="flex-1"
               onChange={handleChangeTaskTitle}
               required
