@@ -1,9 +1,11 @@
+import Skeleton from "./skeleton";
 import Text from "./text";
-import { cva, type VariantProps } from "class-variance-authority"
+import { cva, cx, type VariantProps } from "class-variance-authority"
 
 export const badgeVariants = cva("inline-flex items-center justify-center rounded-full", {
   variants: {
     variant: {
+      none: "",
       primary: "bg-green-light",
       secondary: "bg-pink-light"
     },
@@ -20,6 +22,7 @@ export const badgeVariants = cva("inline-flex items-center justify-center rounde
 export const badgeTextVariants = cva("", {
   variants: {
     variant: {
+      none: "",
       primary: "bg-green-light",
       secondary: "bg-pink-light"
     },
@@ -29,16 +32,41 @@ export const badgeTextVariants = cva("", {
   }
 })
 
+export const badgeSkeletonVariants = cva("", {
+  variants: {
+    size: {
+      sm: "w-6 h-6"
+    }
+  },
+  defaultVariants: {
+    size: "sm"
+  }
+})
+
+
 interface BadgeProps extends React.ComponentProps<"div">,
-  VariantProps<typeof badgeVariants> { }
+  VariantProps<typeof badgeVariants> {
+  loading?: boolean;
+}
 
 export default function Badge({
   variant,
   size,
   className,
   children,
+  loading,
   ...props
 }: BadgeProps) {
+  if (loading) {
+    return <Skeleton
+      rounded="full"
+      className={cx(
+        badgeVariants({ variant: "none" }),
+        badgeSkeletonVariants({ size }),
+        className
+      )}
+    />
+  }
 
   return (
     <div className={badgeVariants({ variant, size, className })} {...props}>
