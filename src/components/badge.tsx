@@ -43,7 +43,6 @@ export const badgeSkeletonVariants = cva("", {
   }
 })
 
-
 interface BadgeProps extends React.ComponentProps<"div">,
   VariantProps<typeof badgeVariants> {
   loading?: boolean;
